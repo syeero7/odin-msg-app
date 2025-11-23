@@ -1,7 +1,6 @@
 {
-  "name": "msg-frontend",
+  "name": "messaginig-app",
   "version": "1.0.0",
-  "main": "index.js",
   "private": true,
   "scripts": {
     "dev:backend": "npm run dev -w backend",
@@ -10,7 +9,7 @@
     "dev:frontend": "npm run dev -w frontend",
     "start:frontend": "npm start -w frontend",
     "build:frontend": "npm run build -w frontend",
-    "preview": "npm run dev -w backend && npm run preview -w frontend"
+    "preview": "npm run preview -w frontend"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +17,7 @@
   "description": "",
   "workspaces": [
     "frontend",
-    "backend"
+    "backend",
+    "shared"
   ]
 }
