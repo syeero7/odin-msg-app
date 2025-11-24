@@ -1,10 +1,35 @@
 import express, { type ErrorRequestHandler } from "express";
+import jwt from "jsonwebtoken";
+import z from "zod";
+
+import { asyncHandler } from "@/lib/async-handler.js";
+import { prisma } from "@/lib/prisma-client.js";
+import { cfg } from "@/lib/env.js";
+
+import auth from "@/routes/auth.js";
 
 const server = express();
-const { PORT } = process.env;
 
-server.use(((err, _req, res, _next) => {}) as ErrorRequestHandler);
+server.use("/auth", auth);
+server.use(
+  asyncHandler(async (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return void res.sendStatus(401);
 
-server.listen(PORT, () => {
-  console.log(`🚀 http://localhost:${PORT!}`);
+    jwt.verify(token, cfg.JWT_SECRET, async (err, decoded) => {
+      if (!decoded && err !== null) return res.sendStatus(401);
+      const { id } = z.object({ id: z.number() }).parse(decoded);
+      const user = await prisma.user.findUnique({ where: { id } });
+      req.user = user || undefined;
+    });
+  }),
+);
+
+server.use(((err: Error, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ message: err.message });
+}) as ErrorRequestHandler);
+
+server.listen(cfg.PORT, () => {
+  console.log(`🚀 http://localhost:${cfg.PORT}`);
 });
