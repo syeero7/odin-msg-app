@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               Int         @id @default(autoincrement())
+  firstName        String
+  lastName         String
+  email            String      @unique
+  password         String
+  imageUrl         String?
+  aboutMe          String?
+  lastActiveAt     DateTime    @default(now())
+  sentMessages     Message[]   @relation("Sender")
+  receivedMessages Message[]   @relation("Recipient")
+  groups           UserGroup[]
+  createdGroups    Group[]
+}
+
+model Group {
+  id        Int         @id @default(autoincrement())
+  name      String
+  createdAt DateTime    @default(now())
+  creator   User        @relation(fields: [creatorId], references: [id])
+  creatorId Int
+  members   UserGroup[]
+  messages  Message[]
+}
+
+model UserGroup {
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId  Int
+  joinedAt DateTime @default(now())
+
+  @@id([userId, groupId])
+}
+
+model Message {
+  id          Int         @id @default(autoincrement())
+  text        String?
+  imageUrl    String?
+  type        MessageType
+  createdAt   DateTime    @default(now())
+  sender      User        @relation("Sender", fields: [senderId], references: [id])
+  senderId    Int
+  recipient   User?       @relation("Recipient", fields: [recipientId], references: [id])
+  recipientId Int?
+  group       Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     Int?
+}
+
+enum MessageType {
+  DIRECT
+  GROUP
+}
