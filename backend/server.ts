@@ -8,6 +8,7 @@ import { cfg } from "@/lib/env.js";
 
 import auth from "@/routes/auth.js";
 import users from "@/routes/users.js";
+import groups from "@/routes/groups.js";
 
 const server = express();
 
@@ -28,6 +29,7 @@ server.use(
 );
 
 server.use("/users", users);
+server.use("/groups", groups);
 
 server.use(((err: Error, _req, res, _next) => {
   console.error(err);
