@@ -8,52 +8,51 @@ datasource db {
 }
 
 model User {
-  id               Int           @id @default(autoincrement())
-  githubId         Int           @unique
-  username         String        @unique
+  id               Int         @id @default(autoincrement())
+  githubId         Int         @unique
+  username         String      @unique
   bio              String?
-  lastActiveAt     DateTime      @default(now())
-  sentMessages     Message[]     @relation("Sender")
-  receivedMessages Message[]     @relation("Recipient")
-  channels         UserChannel[]
-  createdChannels  Channel[]
+  sentMessages     Message[]   @relation("Sender")
+  receivedMessages Message[]   @relation("Recipient")
+  groups           UserGroup[]
+  createdGroups    Group[]
 }
 
-model Channel {
-  id        Int           @id @default(autoincrement())
+model Group {
+  id        Int         @id @default(autoincrement())
   name      String
-  createdAt DateTime      @default(now())
-  creator   User          @relation(fields: [creatorId], references: [id])
+  createdAt DateTime    @default(now())
+  creator   User        @relation(fields: [creatorId], references: [id])
   creatorId Int
-  members   UserChannel[]
+  members   UserGroup[]
   messages  Message[]
 }
 
-model UserChannel {
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  channelId Int
-  joinedAt  DateTime @default(now())
+model UserGroup {
+  user     User     @relation(fields: [userId], references: [id])
+  userId   Int
+  group    Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId  Int
+  joinedAt DateTime @default(now())
 
-  @@id([userId, channelId])
+  @@id([userId, groupId])
 }
 
 model Message {
   id          Int         @id @default(autoincrement())
   text        String?
-  imageURL    String?
+  imageUrl    String?
   type        MessageType
   createdAt   DateTime    @default(now())
   sender      User        @relation("Sender", fields: [senderId], references: [id])
   senderId    Int
   recipient   User?       @relation("Recipient", fields: [recipientId], references: [id])
   recipientId Int?
-  channel     Channel?    @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  channelId   Int?
+  group       Group?      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     Int?
 }
 
 enum MessageType {
   DIRECT
-  CHANNEL
+  GROUP
 }
