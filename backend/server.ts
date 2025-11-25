@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma-client.js";
 import { cfg } from "@/lib/env.js";
 
 import auth from "@/routes/auth.js";
+import users from "@/routes/users.js";
 
 const server = express();
 
@@ -20,10 +21,13 @@ server.use(
       if (!decoded && err !== null) return res.sendStatus(401);
       const { id } = z.object({ id: z.number() }).parse(decoded);
       const user = await prisma.user.findUnique({ where: { id } });
-      req.user = user || undefined;
+      if (!user) return res.sendStatus(401);
+      req.user = user;
     });
   }),
 );
+
+server.use("/users", users);
 
 server.use(((err: Error, _req, res, _next) => {
   console.error(err);
