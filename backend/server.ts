@@ -9,6 +9,7 @@ import { cfg } from "@/lib/env.js";
 import auth from "@/routes/auth.js";
 import users from "@/routes/users.js";
 import groups from "@/routes/groups.js";
+import { handleWS } from "@/handlers/websocket.js";
 
 const server = express();
 
@@ -32,6 +33,7 @@ const io = new Server(httpServer, {
 });
 
 io.use(authenticateWS);
+handleWS(io);
 
 server.use(((err: Error, _req, res, _next) => {
   console.error(err);
