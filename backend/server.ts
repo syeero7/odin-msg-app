@@ -1,9 +1,9 @@
 import express, { type ErrorRequestHandler } from "express";
-import jwt from "jsonwebtoken";
-import z from "zod";
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+import cors from "cors";
 
-import { asyncHandler } from "@/lib/async-handler.js";
-import { prisma } from "@/lib/prisma-client.js";
+import { authenticate, authenticateWS } from "@/lib/authenticate.js";
 import { cfg } from "@/lib/env.js";
 
 import auth from "@/routes/auth.js";
@@ -12,30 +12,32 @@ import groups from "@/routes/groups.js";
 
 const server = express();
 
-server.use("/auth", auth);
 server.use(
-  asyncHandler(async (req, res) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return void res.sendStatus(401);
-
-    jwt.verify(token, cfg.JWT_SECRET, async (err, decoded) => {
-      if (!decoded && err !== null) return res.sendStatus(401);
-      const { id } = z.object({ id: z.number() }).parse(decoded);
-      const user = await prisma.user.findUnique({ where: { id } });
-      if (!user) return res.sendStatus(401);
-      req.user = user;
-    });
+  cors({
+    origin: cfg.FRONTEND_URL,
+    methods: ["GET", "PUT", "POST", "DELETE"],
   }),
 );
+server.use(express.json());
+
+server.use("/auth", auth);
+server.use(authenticate);
 
 server.use("/users", users);
 server.use("/groups", groups);
+
+const httpServer = createServer(server);
+const io = new Server(httpServer, {
+  cors: { origin: cfg.FRONTEND_URL },
+});
+
+io.use(authenticateWS);
 
 server.use(((err: Error, _req, res, _next) => {
   console.error(err);
   res.status(500).json({ message: err.message });
 }) as ErrorRequestHandler);
 
-server.listen(cfg.PORT, () => {
+httpServer.listen(cfg.PORT, () => {
   console.log(`🚀 http://localhost:${cfg.PORT}`);
 });
