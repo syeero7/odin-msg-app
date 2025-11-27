@@ -10,6 +10,7 @@ import auth from "@/routes/auth.js";
 import users from "@/routes/users.js";
 import groups from "@/routes/groups.js";
 import messages from "@/routes/messages.js";
+import assets from "@/routes/assets.js";
 import { handleWS } from "@/handlers/websocket.js";
 
 const server = express();
@@ -28,6 +29,7 @@ server.use(authenticate);
 server.use("/users", users);
 server.use("/groups", groups);
 server.use("/messages", messages);
+server.use("/assets", assets);
 
 const httpServer = createServer(server);
 const io = new Server(httpServer, {
