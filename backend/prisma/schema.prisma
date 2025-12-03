@@ -9,7 +9,7 @@ datasource db {
 
 model User {
   id               Int         @id @default(autoincrement())
-  githubId         Int         @unique
+  githubId         Int?        @unique
   username         String      @unique
   bio              String?
   sentMessages     Message[]   @relation("Sender")
