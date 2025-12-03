@@ -54,12 +54,28 @@ export const githubCallback = asyncHandler(async (req, res) => {
         data: { githubId: id, username: login },
       });
     }
-    const token = jwt.sign({ id: user.id }, cfg.JWT_SECRET, {
-      expiresIn: "1d",
-    });
 
-    res.status(201).json({ user, token });
+    const url = getURLWithToken(user.id);
+    res.redirect(url);
   });
 });
 
-export const guestSignin = asyncHandler(async (req, res) => {});
+export const guestSignin = asyncHandler(async (_, res) => {
+  const guest = await prisma.user.findUnique({
+    where: { username: cfg.GUEST_USERNAME },
+  });
+  if (!guest) throw new Error("Guest not found");
+
+  const url = getURLWithToken(guest.id);
+  res.redirect(url);
+});
+
+function getURLWithToken(id: number) {
+  const token = jwt.sign({ id }, cfg.JWT_SECRET, {
+    expiresIn: "1d",
+  });
+
+  const url = new URL("/login", cfg.FRONTEND_URL);
+  url.searchParams.set("token", token);
+  return url.toString();
+}
