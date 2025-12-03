@@ -4,6 +4,7 @@ import * as handlers from "@/handlers/users.js";
 const router = Router();
 
 router.get("/", handlers.getUsers);
+router.get("/me", handlers.getCurrentUser);
 router.get("/:userId", handlers.getUserById);
 router.put("/", handlers.updateUser);
 

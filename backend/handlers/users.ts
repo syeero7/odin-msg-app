@@ -24,6 +24,16 @@ export const getUserById = asyncHandler(async (req, res) => {
   return res.json({ user });
 });
 
+export const getCurrentUser = asyncHandler(async (req, res) => {
+  const userId = req.user!.id;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) return res.sendStatus(404);
+  return res.json({ user });
+});
+
 export const updateUser = asyncHandler(async (req, res) => {
   const params = z.object({ userId: z.coerce.number() }).safeParse(req.params);
   if (!params.success) return res.sendStatus(400);
