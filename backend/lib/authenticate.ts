@@ -2,7 +2,6 @@ import type { ExtendedError } from "socket.io";
 import jwt from "jsonwebtoken";
 import z from "zod";
 
-import type { User } from "@/generated/prisma/client.js";
 import { asyncHandler } from "@/lib/async-handler.js";
 import { prisma } from "@/lib/prisma-client.js";
 import { cfg } from "@/lib/env.js";
@@ -13,29 +12,29 @@ type SocketMiddleWare = (
 ) => void;
 
 export const authenticate = asyncHandler(async (req, res, next) => {
-  const user = verifyToken(req.headers.authorization);
+  const user = await verifyToken(req.headers.authorization);
   if (!user) return res.sendStatus(401);
   req.user = user;
   next();
 });
 
 export const authenticateWS: SocketMiddleWare = async (socket, next) => {
-  const user = verifyToken(socket.handshake.headers.authorization);
+  const user = await verifyToken(socket.handshake.headers.authorization);
   if (!user) return next(new Error("unauthorized"));
   socket.data.user = user;
   next();
 };
 
-function verifyToken(authorization?: string): User | null {
+async function verifyToken(authorization?: string) {
   const token = authorization?.split(" ")[1];
   if (!token) return null;
 
-  jwt.verify(token, cfg.JWT_SECRET, async (err, decoded) => {
-    if (!decoded && err !== null) return null;
+  try {
+    const decoded = jwt.verify(token, cfg.JWT_SECRET);
     const { id } = z.object({ id: z.number() }).parse(decoded);
     const user = await prisma.user.findUnique({ where: { id } });
     return user;
-  });
-
-  return null;
+  } catch {
+    return null;
+  }
 }
