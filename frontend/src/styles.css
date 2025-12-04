@@ -23,6 +23,47 @@ button {
   @apply cursor-pointer from-inherit text-inherit;
 }
 
+button,
+a {
+  @apply duration-300 ease-in-out;
+  transition-property: color;
+}
+
 main {
   @apply max-w-5xl mx-auto;
+}
+
+#app {
+  @apply min-h-screen md:flex;
+}
+
+:disabled {
+  @apply opacity-60;
+}
+
+.chat-list {
+  > section {
+    scrollbar-color: var(--color-background) var(--color-muted);
+    scrollbar-width: thin;
+  }
+}
+
+@media (width > 48em) {
+  .chat-list {
+    @apply grid grid-cols-6 grid-rows-10 h-[80vh] my-auto py-3 border border-muted rounded-xl;
+
+    > nav {
+      @apply border-r border-r-muted;
+      grid-area: 1/1/11/2;
+    }
+
+    > header {
+      @apply max-h-fit border-b border-b-muted ml-2;
+      grid-area: 1/2/1/7;
+    }
+
+    > section {
+      grid-area: 2/2/11/7;
+    }
+  }
 }
