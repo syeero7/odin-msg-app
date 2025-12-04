@@ -14,6 +14,10 @@ export function createGroup(data: Pick<Group, "name">) {
   return fetcher<{ group: Group }>("/groups", "POST", ["auth", "json"], data);
 }
 
+export function getUsers() {
+  return fetcher<{ users: User[] }>("/users", "GET", ["auth"]);
+}
+
 type FetcherMethod = "GET" | "POST" | "PUT" | "DELETE";
 type FetcherHeader = "auth" | "json" | "multipart";
 

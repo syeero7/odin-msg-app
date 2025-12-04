@@ -43,15 +43,22 @@ main {
   @apply opacity-60;
 }
 
-.chat-list {
+.chat-container {
+  @apply flex flex-col max-md:h-screen;
+
   > section {
+    @apply grow overflow-auto min-h-0 p-2;
     scrollbar-color: var(--color-background) var(--color-muted);
     scrollbar-width: thin;
+
+    > p {
+      @apply text-center text-sm p-4 text-muted-foreground;
+    }
   }
 }
 
 @media (width > 48em) {
-  .chat-list {
+  .chat-container {
     @apply grid grid-cols-6 grid-rows-10 h-[80vh] my-auto py-3 border border-muted rounded-xl;
 
     > nav {
