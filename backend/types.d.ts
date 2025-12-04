@@ -1,5 +1,5 @@
 import type { Server, Socket } from "socket.io";
-import type { User } from "@/generated/prisma/client.js";
+import type { User } from "@shared/prisma/client.js";
 import type { string } from "zod";
 
 declare global {

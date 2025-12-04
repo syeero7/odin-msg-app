@@ -1,5 +1,5 @@
 import z from "zod";
-import type { MessageCreateInput } from "@/generated/prisma/models.js";
+import type { MessageCreateInput } from "@shared/prisma/models.js";
 import { prisma } from "@/lib/prisma-client.js";
 
 const messageData = z.object({

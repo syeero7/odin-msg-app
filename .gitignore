@@ -9,6 +9,7 @@ dist-ssr
 *.local
 *.old*
 *backend/generated/*
+*shared/prisma/*
 
 # Editor directories and files
 .vscode/*
