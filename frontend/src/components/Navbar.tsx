@@ -4,8 +4,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "./AuthProvider";
 
 const options = linkOptions([
-  { to: "/chat/users", label: "Users", Icon: Users },
-  { to: "/chat/groups", label: "Groups", Icon: LayoutGrid },
+  { to: "/users", label: "Users", Icon: Users },
+  { to: "/groups", label: "Groups", Icon: LayoutGrid },
   { to: "/edit-profile", label: "Edit profile", Icon: UserPen },
 ]);
 
