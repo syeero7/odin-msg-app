@@ -26,7 +26,7 @@ export const createGroup = asyncHandler(async (req, res) => {
   }
 
   const userId = req.user!.id;
-  await prisma.group.create({
+  const group = await prisma.group.create({
     data: {
       name: body.data.name,
       creator: {
@@ -38,7 +38,7 @@ export const createGroup = asyncHandler(async (req, res) => {
     },
   });
 
-  res.sendStatus(201);
+  res.status(201).json({ group });
 });
 
 export const getGroupById = asyncHandler(async (req, res) => {
