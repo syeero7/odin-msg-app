@@ -24,7 +24,9 @@ button {
 }
 
 button,
-a {
+a,
+button *,
+a * {
   @apply duration-300 ease-in-out;
   transition-property: color;
 }
