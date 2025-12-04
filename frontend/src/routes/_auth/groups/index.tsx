@@ -76,7 +76,7 @@ function GroupList() {
           <p>No groups</p>
         ) : (
           data.groups.map(({ id, name }) => {
-            const imageUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${name}-${id}-G&size=40`;
+            const imgURL = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${name}-${id}-G&size=40`;
 
             return (
               <Link
@@ -87,7 +87,7 @@ function GroupList() {
                 key={id}
               >
                 <img
-                  src={imageUrl}
+                  src={imgURL}
                   alt=""
                   aria-hidden
                   className="rounded-[50%] size-10"
