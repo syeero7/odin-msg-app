@@ -36,7 +36,7 @@ function RouteComponent() {
     enabled: !!storage.getItem() && !auth.user,
     staleTime: Infinity,
     refetchOnWindowFocus: false,
-    queryFn: () => getUserData(),
+    queryFn: getUserData,
   });
 
   useEffect(() => {

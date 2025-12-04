@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthEditProfileRouteImport } from './routes/_auth/edit-profile'
+import { Route as AuthChatUsersIndexRouteImport } from './routes/_auth/chat/users/index'
+import { Route as AuthChatGroupsIndexRouteImport } from './routes/_auth/chat/groups/index'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -27,27 +30,58 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthEditProfileRoute = AuthEditProfileRouteImport.update({
+  id: '/edit-profile',
+  path: '/edit-profile',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthChatUsersIndexRoute = AuthChatUsersIndexRouteImport.update({
+  id: '/chat/users/',
+  path: '/chat/users/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthChatGroupsIndexRoute = AuthChatGroupsIndexRouteImport.update({
+  id: '/chat/groups/',
+  path: '/chat/groups/',
+  getParentRoute: () => AuthRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
+  '/edit-profile': typeof AuthEditProfileRoute
   '/': typeof AuthIndexRoute
+  '/chat/groups': typeof AuthChatGroupsIndexRoute
+  '/chat/users': typeof AuthChatUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/edit-profile': typeof AuthEditProfileRoute
   '/': typeof AuthIndexRoute
+  '/chat/groups': typeof AuthChatGroupsIndexRoute
+  '/chat/users': typeof AuthChatUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/login': typeof LoginRoute
+  '/_auth/edit-profile': typeof AuthEditProfileRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/chat/groups/': typeof AuthChatGroupsIndexRoute
+  '/_auth/chat/users/': typeof AuthChatUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/login' | '/'
+  fullPaths: '/login' | '/edit-profile' | '/' | '/chat/groups' | '/chat/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/'
-  id: '__root__' | '/_auth' | '/login' | '/_auth/'
+  to: '/login' | '/edit-profile' | '/' | '/chat/groups' | '/chat/users'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/login'
+    | '/_auth/edit-profile'
+    | '/_auth/'
+    | '/_auth/chat/groups/'
+    | '/_auth/chat/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -78,15 +112,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/edit-profile': {
+      id: '/_auth/edit-profile'
+      path: '/edit-profile'
+      fullPath: '/edit-profile'
+      preLoaderRoute: typeof AuthEditProfileRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/chat/users/': {
+      id: '/_auth/chat/users/'
+      path: '/chat/users'
+      fullPath: '/chat/users'
+      preLoaderRoute: typeof AuthChatUsersIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/chat/groups/': {
+      id: '/_auth/chat/groups/'
+      path: '/chat/groups'
+      fullPath: '/chat/groups'
+      preLoaderRoute: typeof AuthChatGroupsIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
   }
 }
 
 interface AuthRouteChildren {
+  AuthEditProfileRoute: typeof AuthEditProfileRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthChatGroupsIndexRoute: typeof AuthChatGroupsIndexRoute
+  AuthChatUsersIndexRoute: typeof AuthChatUsersIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
+  AuthEditProfileRoute: AuthEditProfileRoute,
   AuthIndexRoute: AuthIndexRoute,
+  AuthChatGroupsIndexRoute: AuthChatGroupsIndexRoute,
+  AuthChatUsersIndexRoute: AuthChatUsersIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

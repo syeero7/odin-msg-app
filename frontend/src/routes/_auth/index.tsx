@@ -1,9 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/")({
-  component: App,
+  component: () => <Navigate to="/chat/groups" viewTransition replace />,
 });
-
-function App() {
-  return <div>Lorem Ipsum</div>;
-}
