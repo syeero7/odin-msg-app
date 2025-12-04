@@ -7,6 +7,7 @@ import {
   useLocation,
   useNavigate,
 } from "@tanstack/react-router";
+import { CURRENT_USER } from "@/lib/query-keys";
 import { getUserData } from "@/lib/api";
 import * as storage from "@/lib/storage";
 import { cfg } from "@/lib/env";
@@ -32,7 +33,7 @@ function RouteComponent() {
   const { search } = useLocation();
   const navigate = useNavigate();
   const { data, isSuccess, isError } = useQuery({
-    queryKey: ["current_user"],
+    queryKey: CURRENT_USER,
     enabled: !!storage.getItem() && !auth.user,
     staleTime: Infinity,
     refetchOnWindowFocus: false,

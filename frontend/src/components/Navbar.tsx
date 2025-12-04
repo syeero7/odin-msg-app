@@ -1,6 +1,7 @@
 import { Link, linkOptions, useNavigate } from "@tanstack/react-router";
 import { LayoutGrid, LogOut, UserPen, Users } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { CURRENT_USER } from "@/lib/query-keys";
 import { useAuth } from "./AuthProvider";
 
 const options = linkOptions([
@@ -16,7 +17,7 @@ export function Navbar() {
 
   const handleClick = () => {
     logout();
-    client.removeQueries({ queryKey: ["current_user"] });
+    client.removeQueries({ queryKey: CURRENT_USER });
     navigate({ to: "/login", viewTransition: true });
   };
 
