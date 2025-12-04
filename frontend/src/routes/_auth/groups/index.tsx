@@ -8,8 +8,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PlusSquare } from "lucide-react";
 import z from "zod";
 import { createGroup, getGroups } from "@/lib/api";
-import { GROUPS } from "@/lib/query-keys";
 import { Navbar } from "@/components/Navbar";
+import { GROUPS } from "@/lib/query-keys";
 
 const groupsQuery = queryOptions({
   queryKey: GROUPS,
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_auth/groups/")({
 
 function RouteComponent() {
   return (
-    <main className="flex flex-col max-md:h-screen chat-list">
+    <main className="chat-container">
       <Header />
       <GroupList />
       <Navbar />
@@ -69,7 +69,7 @@ function GroupList() {
   const { isLoading, data } = useQuery(groupsQuery);
 
   return (
-    <section className="grow overflow-auto min-h-0 p-2">
+    <section>
       {isLoading && <p>Loading...</p>}
       {!!data &&
         (data.groups.length === 0 ? (
