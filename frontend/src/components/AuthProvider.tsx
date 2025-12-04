@@ -1,15 +1,11 @@
 import { createContext, use, useState, type PropsWithChildren } from "react";
+import type { User } from "@shared/prisma/client";
 import * as storage from "@/lib/storage";
 
-type AuthUser = {
-  id: number;
-  username: string;
-};
-
 export type AuthState = {
-  user: AuthUser | null;
+  user: User | null;
   logout: () => void;
-  login: (u: AuthUser) => void;
+  login: (u: User) => void;
 };
 
 const AuthContext = createContext<undefined | AuthState>(undefined);
@@ -22,9 +18,9 @@ export const useAuth = (): AuthState => {
 };
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  const login = (user: AuthUser) => {
+  const login = (user: User) => {
     setUser(user);
   };
 

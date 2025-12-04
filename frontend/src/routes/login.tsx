@@ -42,11 +42,7 @@ function RouteComponent() {
 
   useEffect(() => {
     if (isSuccess && data) {
-      const user = z
-        .object({ user: z.object({ id: z.number(), username: z.string() }) })
-        .transform(({ user }) => user);
-
-      auth.login(user.parse(data));
+      auth.login(data.user);
       navigate({
         to: search.redirect || "/",
         viewTransition: true,
