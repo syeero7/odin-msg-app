@@ -1,9 +1,9 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { githubUsername, profileImageURL } from "@/lib/utils";
 import { Navbar } from "@/components/Navbar";
 import { USERS } from "@/lib/query-keys";
 import { getUsers } from "@/lib/api";
-import { cfg } from "@/lib/env";
 
 const usersQuery = queryOptions({
   queryKey: USERS,
@@ -39,33 +39,25 @@ function UserList() {
         (!data.users.length ? (
           <p>No users</p>
         ) : (
-          data.users.map(({ id, username, githubId }) => {
-            let imgURL = `https://avatars.githubusercontent.com/u/${githubId}?v=4&size=40`;
-            if (username === cfg.VITE_GUEST_USERNAME) {
-              imgURL = `https://api.dicebear.com/9.x/identicon/svg?backgroundColor=ffffff&seed=guest_#${id}&size=40`;
-              username = username
-                .replace(/[^a-z0-9-.]/gi, "")
-                .replace(/^[.-]+|[.-]+$/g, "");
-            }
-
-            return (
-              <Link
-                to="/chat/users/$userId"
-                params={{ userId: id.toString() }}
-                className="flex gap-3 p-3 hover:text-cyan-500"
-                viewTransition
-                key={id}
-              >
-                <img
-                  src={imgURL}
-                  alt=""
-                  aria-hidden
-                  className="size-10 rounded-[50%]"
-                />
-                <span className="overflow-x-auto mt-1.5">{username}</span>
-              </Link>
-            );
-          })
+          data.users.map((user) => (
+            <Link
+              to="/chat/users/$userId"
+              params={{ userId: user.id.toString() }}
+              className="flex gap-3 p-3 hover:text-cyan-500"
+              viewTransition
+              key={user.id}
+            >
+              <img
+                src={profileImageURL(user, 40)}
+                alt=""
+                aria-hidden
+                className="size-10 rounded-[50%]"
+              />
+              <span className="overflow-x-auto mt-1.5">
+                {githubUsername(user.username)}
+              </span>
+            </Link>
+          ))
         ))}
     </section>
   );
