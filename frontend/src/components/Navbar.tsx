@@ -22,7 +22,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="flex gap-4 p-4 sm:px-6 md:flex-col md:max-w-fit">
+    <nav className="flex gap-4 p-4 sm:px-4 md:flex-col md:w-40">
       {options.map(({ to, Icon, label }) => (
         <Link
           key={to}
@@ -31,7 +31,7 @@ export function Navbar() {
           activeProps={{ className: "font-bold text-cyan-500" }}
           className="md:flex gap-4 max-w-fit hover:text-cyan-400"
         >
-          <Icon className="mx-auto" />
+          <Icon className="mx-auto size-6" />
           <span className="text-sm md:mt-0.5">{label}</span>
         </Link>
       ))}
