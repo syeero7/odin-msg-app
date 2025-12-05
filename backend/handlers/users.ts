@@ -35,16 +35,14 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
-  const params = z.object({ userId: z.coerce.number() }).safeParse(req.params);
-  if (!params.success) return res.sendStatus(400);
-
+  const userId = req.user!.id;
   const body = z.object({ bio: z.string().max(200) }).safeParse(req.body);
   if (!body.success) {
     return res.status(400).json({ message: body.error.message });
   }
 
   await prisma.user.update({
-    where: { id: params.data.userId },
+    where: { id: userId },
     data: body.data,
   });
 
