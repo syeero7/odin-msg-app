@@ -20,7 +20,7 @@ body {
 }
 
 button {
-  @apply cursor-pointer from-inherit text-inherit;
+  @apply cursor-pointer;
 }
 
 button,
@@ -28,7 +28,7 @@ a,
 button *,
 a * {
   @apply duration-300 ease-in-out;
-  transition-property: color;
+  transition-property: color, border-color;
 }
 
 main {

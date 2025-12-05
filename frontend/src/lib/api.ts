@@ -18,6 +18,14 @@ export function getUsers() {
   return fetcher<{ users: User[] }>("/users", "GET", ["auth"]);
 }
 
+export function getUserById(userId: number | string) {
+  return fetcher<{ user: User }>(`/users/${userId}`, "GET", ["auth"]);
+}
+
+export function updateUserBio(data: Pick<User, "bio">) {
+  return fetcher("/users", "PUT", ["auth", "json"], data);
+}
+
 type FetcherMethod = "GET" | "POST" | "PUT" | "DELETE";
 type FetcherHeader = "auth" | "json" | "multipart";
 
@@ -30,7 +38,7 @@ async function fetcher<T>(
   const url = `${cfg.VITE_BACKEND_URL}${path}`;
   const options: RequestInit = { method };
 
-  if (method === "POST" && body) {
+  if ((method === "POST" || method === "PUT") && body) {
     options.body = JSON.stringify(body);
   }
 
