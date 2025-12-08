@@ -26,6 +26,20 @@ export function updateUserBio(data: Pick<User, "bio">) {
   return fetcher("/users", "PUT", ["auth", "json"], data);
 }
 
+type MessageQueries = {
+  limit?: number;
+  before_id?: number;
+  recipient_id: number | string;
+};
+
+export function getDirectMessages(q: MessageQueries) {
+  return fetcher(`/messages/direct${generateQueryString(q)}`, "GET", ["auth"]);
+}
+
+export function getGroupMessages(q: MessageQueries) {
+  return fetcher(`/messages/group${generateQueryString(q)}`, "GET", ["auth"]);
+}
+
 type FetcherMethod = "GET" | "POST" | "PUT" | "DELETE";
 type FetcherHeader = "auth" | "json" | "multipart";
 
@@ -43,32 +57,46 @@ async function fetcher<T>(
   }
 
   if (headers?.length) {
-    const tmp: Record<string, string> = {};
-
-    headers.forEach((header) => {
-      switch (header) {
-        case "auth": {
-          const token = getItem();
-          tmp["Authorization"] = `Bearer ${token}`;
-          break;
-        }
-
-        case "json": {
-          tmp["Content-Type"] = "application/json";
-          break;
-        }
-
-        case "multipart": {
-          tmp["Content-Type"] = "";
-          break;
-        }
-      }
-    });
-
-    options.headers = tmp;
+    options.headers = generateHeaders(headers);
   }
 
   const res = await fetch(url, options);
   if (!res.ok) throw res;
   return (await res.json()) as T;
+}
+
+function generateHeaders(headers: FetcherHeader[]) {
+  const tmp: Record<string, string> = {};
+
+  headers.forEach((header) => {
+    switch (header) {
+      case "auth": {
+        const token = getItem();
+        tmp["Authorization"] = `Bearer ${token}`;
+        break;
+      }
+
+      case "json": {
+        tmp["Content-Type"] = "application/json";
+        break;
+      }
+
+      case "multipart": {
+        tmp["Content-Type"] = "";
+        break;
+      }
+    }
+  });
+
+  return tmp;
+}
+
+function generateQueryString(queries: MessageQueries) {
+  const search = new URLSearchParams();
+
+  Object.entries(queries).forEach(([key, val]) => {
+    search.set(key, `${val}`);
+  });
+
+  return search.toString();
 }
