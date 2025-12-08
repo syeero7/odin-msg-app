@@ -1,17 +1,11 @@
-import { Navbar } from "@/components/Navbar";
-import { getUserById, updateUserBio } from "@/lib/api";
-import { USER } from "@/lib/query-keys";
-import { githubUsername, profileImageURL } from "@/lib/utils";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import z from "zod";
-
-function userOptions(userId: number | string) {
-  return queryOptions({
-    queryKey: USER(userId),
-    queryFn: () => getUserById(userId),
-  });
-}
+import { githubUsername, profileImageURL } from "@/lib/utils";
+import { userOptions } from "@/lib/query-options";
+import { Navbar } from "@/components/Navbar";
+import { updateUserBio } from "@/lib/api";
+import { USER } from "@/lib/query-keys";
 
 export const Route = createFileRoute("/_auth/edit-profile")({
   component: RouteComponent,
