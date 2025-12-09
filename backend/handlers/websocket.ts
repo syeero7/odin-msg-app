@@ -3,9 +3,9 @@ import type { MessageCreateInput } from "@shared/prisma/models.js";
 import { prisma } from "@/lib/prisma-client.js";
 
 const messageData = z.object({
-  recipientId: z.number(),
+  recipientId: z.coerce.number(),
   contentType: z.enum(["text", "image"]),
-  content: z.string().min(1).min(2000),
+  content: z.string().min(1).max(2000),
 });
 
 export function handleWS(io: SocketIO) {
