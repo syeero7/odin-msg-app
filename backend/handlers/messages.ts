@@ -4,16 +4,12 @@ import { prisma } from "@/lib/prisma-client.js";
 
 const messageQuery = z
   .object({
-    recipient_id: z.number(),
-    before_id: z.number().optional(),
-    limit: z.number().optional().default(20),
+    recipient_id: z.coerce.number(),
+    cursor: z.coerce.number().optional(),
+    limit: z.coerce.number().optional().default(20),
   })
-  .transform(({ recipient_id, before_id, ...rest }) => {
-    return {
-      recipientId: recipient_id,
-      ...(before_id && { beforeId: before_id }),
-      ...rest,
-    };
+  .transform(({ recipient_id, ...rest }) => {
+    return { recipientId: recipient_id, ...rest };
   });
 
 export const getDirectMessages = asyncHandler(async (req, res) => {
@@ -21,21 +17,26 @@ export const getDirectMessages = asyncHandler(async (req, res) => {
   if (!query.success) return res.sendStatus(400);
 
   const user1 = req.user!.id;
-  const { recipientId: user2, limit, beforeId } = query.data;
-  const messages = await prisma.message.findMany({
+  const { recipientId: user2, limit, cursor } = query.data;
+  const items = await prisma.message.findMany({
     where: {
       type: "DIRECT",
       OR: [
         { senderId: user1, recipientId: user2 },
         { senderId: user2, recipientId: user1 },
       ],
-      ...(beforeId && { id: { gt: beforeId } }),
     },
     orderBy: { createdAt: "desc" },
-    take: limit,
+    take: limit + 1,
+    ...(cursor && { cursor: { id: cursor } }),
+    skip: cursor ? 1 : 0,
   });
 
-  res.json({ messages });
+  const messages = items.length > limit ? items.slice(0, -1) : items;
+  const nextCursor =
+    items.length > limit ? messages[messages.length - 1].id : undefined;
+
+  res.json({ messages, nextCursor });
 });
 
 export const getGroupMessages = asyncHandler(async (req, res) => {
@@ -43,8 +44,8 @@ export const getGroupMessages = asyncHandler(async (req, res) => {
   if (!query.success) return res.sendStatus(400);
 
   const userId = req.user!.id;
-  const { recipientId: groupId, limit, beforeId } = query.data;
-  const [member, messages] = await prisma.$transaction([
+  const { recipientId: groupId, limit, cursor } = query.data;
+  const [member, items] = await prisma.$transaction([
     prisma.userGroup.findUnique({
       where: {
         userId_groupId: { userId, groupId },
@@ -54,13 +55,18 @@ export const getGroupMessages = asyncHandler(async (req, res) => {
       where: {
         type: "GROUP",
         groupId,
-        ...(beforeId && { id: { gt: beforeId } }),
       },
       orderBy: { createdAt: "desc" },
-      take: limit,
+      take: limit + 1,
+      ...(cursor && { cursor: { id: cursor } }),
+      skip: cursor ? 1 : 0,
     }),
   ]);
 
   if (!member) return res.sendStatus(403);
-  res.json({ messages });
+  const messages = items.length > limit ? items.slice(0, -1) : items;
+  const nextCursor =
+    items.length > limit ? messages[messages.length - 1].id : undefined;
+
+  res.json({ messages, nextCursor });
 });
