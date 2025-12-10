@@ -57,6 +57,26 @@ main {
   }
 }
 
+.file-upload {
+  @apply size-9 isolate relative pointer-events-none border-2 border-transparent rounded-lg;
+
+  &:has(input:focus-visible) {
+    @apply border-foreground outline-foreground;
+  }
+
+  svg {
+    @apply absolute top-[50%] left-[50%] translate-[-50%] size-8 pointer-events-auto cursor-pointer;
+  }
+
+  input {
+    @apply absolute top-0 left-0 size-8 opacity-0;
+
+    &::file-selector-button {
+      @apply size-8 m-0 pointer-events-auto cursor-pointer z-1;
+    }
+  }
+}
+
 @media (width > 48em) {
   .chat-container {
     @apply grid grid-cols-6 grid-rows-10 h-[80vh] my-auto py-3 border border-muted rounded-xl;
