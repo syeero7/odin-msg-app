@@ -2,6 +2,7 @@ import { ChatForm } from "@/components/ChatForm";
 import { MessageCard } from "@/components/MessageCard";
 import { Navbar } from "@/components/Navbar";
 import { useSocket } from "@/components/SocketProvider";
+import { useScrollToView } from "@/hooks/use-scroll-view";
 import { getDirectMessages } from "@/lib/api";
 import { DIRECT_MSG } from "@/lib/query-keys";
 import { userOptions } from "@/lib/query-options";
@@ -15,7 +16,7 @@ import {
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import z from "zod";
 
 export const Route = createFileRoute("/_auth/chat/users/$userId")({
@@ -76,8 +77,7 @@ function Chat({ userId }: { userId: string }) {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery(directMessageOptions(userId));
   const userQ = useQuery(userOptions(userId));
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [scroll, setScroll] = useState(true);
+  const { scrollRef, scrollToView } = useScrollToView();
 
   const formAction = async (formData: FormData) => {
     if (!socket) return;
@@ -92,14 +92,6 @@ function Chat({ userId }: { userId: string }) {
   };
 
   const messages = data?.pages.flatMap((page) => page.messages).reverse();
-
-  useEffect(() => {
-    if (!scrollRef.current) return;
-    if (scroll) {
-      scrollRef.current.scrollIntoView({ behavior: "auto" });
-      setScroll(false);
-    }
-  }, [scroll]);
 
   useEffect(() => {
     if (!socket) return;
@@ -123,7 +115,7 @@ function Chat({ userId }: { userId: string }) {
           ],
         };
       });
-      setScroll(true);
+      scrollToView();
     };
     socket.on("receive_direct", listener);
 
