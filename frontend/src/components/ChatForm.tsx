@@ -10,7 +10,10 @@ export function ChatForm({ disabled, formAction }: ChatFormProps) {
   const [selected, setSelected] = useState(false);
 
   return (
-    <form action={formAction} className="flex gap-4 px-2 py-3">
+    <form
+      action={formAction}
+      className="flex gap-4 px-2 py-3 border-t border-t-muted"
+    >
       <label aria-label="upload image" className="file-upload">
         <ImageUp className={selected ? "text-green-500" : ""} />
         <input

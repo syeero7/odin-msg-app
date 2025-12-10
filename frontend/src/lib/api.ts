@@ -1,6 +1,6 @@
 import { getItem } from "./storage";
 import { cfg } from "./env";
-import type { Group, User } from "@shared/prisma/client";
+import type { Group, Message, User } from "@shared/prisma/client";
 
 export function getUserData() {
   return fetcher<{ user: User }>("/users/me", "GET", ["auth"]);
@@ -26,18 +26,22 @@ export function updateUserBio(data: Pick<User, "bio">) {
   return fetcher("/users", "PUT", ["auth", "json"], data);
 }
 
-type MessageQueries = {
+export type MessageQueries = {
   limit?: number;
-  before_id?: number;
+  cursor?: number;
   recipient_id: number | string;
 };
 
+type MessageResponse = { messages: Message[]; nextCursor?: number };
+
 export function getDirectMessages(q: MessageQueries) {
-  return fetcher(`/messages/direct${generateQueryString(q)}`, "GET", ["auth"]);
+  const path = `/messages/direct${generateQueryString(q)}`;
+  return fetcher<MessageResponse>(path, "GET", ["auth"]);
 }
 
 export function getGroupMessages(q: MessageQueries) {
-  return fetcher(`/messages/group${generateQueryString(q)}`, "GET", ["auth"]);
+  const path = `/messages/group${generateQueryString(q)}`;
+  return fetcher<MessageResponse>(path, "GET", ["auth"]);
 }
 
 type FetcherMethod = "GET" | "POST" | "PUT" | "DELETE";
@@ -98,5 +102,5 @@ function generateQueryString(queries: MessageQueries) {
     search.set(key, `${val}`);
   });
 
-  return search.toString();
+  return `?${search.toString()}`;
 }

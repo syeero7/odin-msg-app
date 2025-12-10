@@ -1,5 +1,6 @@
 import type { User } from "@shared/prisma/client";
 import { cfg } from "./env";
+import z from "zod";
 
 export function githubUsername(str: string) {
   if (str !== cfg.VITE_GUEST_USERNAME) return str;
@@ -12,4 +13,16 @@ export function profileImageURL(user: User, size: number) {
     url = `https://api.dicebear.com/9.x/identicon/svg?backgroundColor=ffffff&seed=guest_#${user.id}&size=${size}`;
   }
   return url;
+}
+
+export async function processFormData(formData: FormData) {
+  const data: { type: string; content: string }[] = [];
+  const text = z.string().parse(formData.get("text"));
+  const image = z.instanceof(File).parse(formData.get("image"));
+
+  if (text.length) data.push({ type: "text", content: text });
+  if (image.size) {
+  }
+
+  return data;
 }

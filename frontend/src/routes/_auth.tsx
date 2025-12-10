@@ -1,7 +1,8 @@
+import { SocketProvider } from "@/components/SocketProvider";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth")({
-  component: () => <Outlet />,
+  component: Authenticated,
   beforeLoad: ({ context, location }) => {
     if (!context.auth.user) {
       throw redirect({
@@ -15,3 +16,11 @@ export const Route = createFileRoute("/_auth")({
     }
   },
 });
+
+function Authenticated() {
+  return (
+    <SocketProvider>
+      <Outlet />
+    </SocketProvider>
+  );
+}
