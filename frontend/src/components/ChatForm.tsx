@@ -1,4 +1,4 @@
-import { ImageUp, Send, Upload } from "lucide-react";
+import { ImageUp, Send } from "lucide-react";
 import { useState, type FormHTMLAttributes } from "react";
 
 type ChatFormProps = {
