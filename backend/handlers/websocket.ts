@@ -65,7 +65,14 @@ export function handleWS(io: SocketIO) {
       };
       if (contentType === "text") data.text = content;
       if (contentType === "image") data.imageUrl = content;
-      const msg = await prisma.message.create({ data });
+      const msg = await prisma.message.create({
+        data,
+        include: {
+          sender: {
+            omit: { bio: true },
+          },
+        },
+      });
 
       socket.to(`group:${recipientId}`).emit("receive_group", msg);
       cb({ status: 200 });

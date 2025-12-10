@@ -56,6 +56,7 @@ export const getGroupMessages = asyncHandler(async (req, res) => {
         type: "GROUP",
         groupId,
       },
+      include: { sender: { omit: { bio: true } } },
       orderBy: { createdAt: "desc" },
       take: limit + 1,
       ...(cursor && { cursor: { id: cursor } }),
