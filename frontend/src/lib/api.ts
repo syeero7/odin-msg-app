@@ -1,6 +1,10 @@
 import { getItem } from "./storage";
 import { cfg } from "./env";
-import type { Group, Message, User } from "@shared/prisma/client";
+import type { Group, User } from "@shared/prisma/client";
+import type {
+  DirectMessaages,
+  GroupMessages,
+} from "@/hooks/use-messaages-query";
 
 export function getUserData() {
   return fetcher<{ user: User }>("/users/me", "GET", ["auth"]);
@@ -32,16 +36,14 @@ export type MessageQueries = {
   recipient_id: number | string;
 };
 
-type MessageResponse = { messages: Message[]; nextCursor?: number };
-
 export function getDirectMessages(q: MessageQueries) {
   const path = `/messages/direct${generateQueryString(q)}`;
-  return fetcher<MessageResponse>(path, "GET", ["auth"]);
+  return fetcher<DirectMessaages>(path, "GET", ["auth"]);
 }
 
 export function getGroupMessages(q: MessageQueries) {
   const path = `/messages/group${generateQueryString(q)}`;
-  return fetcher<MessageResponse>(path, "GET", ["auth"]);
+  return fetcher<GroupMessages>(path, "GET", ["auth"]);
 }
 
 type FetcherMethod = "GET" | "POST" | "PUT" | "DELETE";
