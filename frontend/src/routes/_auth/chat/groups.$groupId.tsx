@@ -1,9 +1,106 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { infiniteQueryOptions, useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { LoaderCircle } from "lucide-react";
+import z from "zod";
 
-export const Route = createFileRoute('/_auth/chat/groups/$groupId')({
+import { ChatForm } from "@/components/ChatForm";
+import { MessageCard } from "@/components/MessageCard";
+import { Navbar } from "@/components/Navbar";
+import { useSocket } from "@/components/SocketProvider";
+import { useMessagesQuery } from "@/hooks/use-messaages-query";
+import { getGroupMessages } from "@/lib/api";
+import { GROUP_MSG } from "@/lib/query-keys";
+import { groupsOptions } from "@/lib/query-options";
+import { groupImageURL, processFormData } from "@/lib/utils";
+import type { Group } from "@shared/prisma/client";
+
+export const Route = createFileRoute("/_auth/chat/groups/$groupId")({
   component: RouteComponent,
-})
+  loader: ({ context, params }) => {
+    return context.queryClient.ensureQueryData(groupsOptions(params.groupId));
+  },
+});
+
+function groupMsgOptions(groupId: string | number) {
+  return infiniteQueryOptions({
+    queryKey: GROUP_MSG(groupId),
+    queryFn: ({ pageParam }) => {
+      const cursor = z.number().optional().parse(pageParam);
+      return getGroupMessages({ cursor, recipient_id: groupId });
+    },
+    initialPageParam: 0,
+    getNextPageParam: (last) => last.nextCursor,
+  });
+}
 
 function RouteComponent() {
-  return <div>Hello "/_auth/chat/groups/$groupId"!</div>
+  const { groupId } = Route.useParams();
+  const { data, isLoading } = useQuery(groupsOptions(groupId));
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  return (
+    <main className="chat-container">
+      <Header group={data!.group} />
+      <Chat group={data!.group} />
+      <Navbar />
+    </main>
+  );
+}
+
+function Header({ group }: { group: Group }) {
+  return (
+    <header className="min-h-[4.5em] flex gap-4 items-center">
+      <img
+        alt=""
+        src={groupImageURL(group.id, group.name)}
+        className="size-10 rounded-[50%] ml-4"
+      />
+      <h1 className="text-2xl font-bold">{group.name}</h1>
+    </header>
+  );
+}
+
+function Chat({ group }: { group: Group }) {
+  const socket = useSocket();
+  const { scrollRef, messages, isFetching, fetchMoreMessages, canLoadMore } =
+    useMessagesQuery(groupMsgOptions(group.id), "group", socket);
+
+  const formAction = async (formData: FormData) => {
+    if (!socket) return;
+    const processed = await processFormData(formData);
+    processed.forEach(({ type, content }) => {
+      socket.emit(
+        "send_group",
+        { content, recipientId: group.id, contentType: type },
+        (res: unknown) => console.log(res),
+      );
+    });
+  };
+
+  return (
+    <section className="flex flex-col">
+      <div className="overflow-y-auto grow flex flex-col">
+        <div className="flex">
+          <button
+            onClick={fetchMoreMessages}
+            disabled={!canLoadMore}
+            className="mx-auto max-w-fit hover:text-green-500 border-2 my-1 px-3 py-1 text-sm rounded-[999px] flex gap-2 items-center"
+          >
+            <span>{isFetching ? "Loading" : "Load more"}</span>
+            {isFetching && <LoaderCircle className="animate-spin size-4" />}
+          </button>
+        </div>
+        {messages.length > 0 &&
+          messages.map((msg: (typeof messages)[0]) => (
+            <MessageCard key={msg.id} message={msg} sender={msg.sender} />
+          ))}
+        <div className="mt-auto" ref={scrollRef}></div>
+      </div>
+
+      <ChatForm formAction={formAction} disabled={false} />
+    </section>
+  );
 }

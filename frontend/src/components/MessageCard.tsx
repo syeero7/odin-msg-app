@@ -3,7 +3,7 @@ import type { Message, User } from "@shared/prisma/client";
 
 type MessageCardProps = {
   message: Message;
-  sender: User;
+  sender: Omit<User, "bio">;
 };
 
 export function MessageCard({ message, sender }: MessageCardProps) {

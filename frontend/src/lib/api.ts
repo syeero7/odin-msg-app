@@ -30,6 +30,10 @@ export function updateUserBio(data: Pick<User, "bio">) {
   return fetcher("/users", "PUT", ["auth", "json"], data);
 }
 
+export function getGroupById(groupId: number | string) {
+  return fetcher<{ group: Group }>(`/groups/${groupId}`, "GET", ["auth"]);
+}
+
 export type MessageQueries = {
   limit?: number;
   cursor?: number;

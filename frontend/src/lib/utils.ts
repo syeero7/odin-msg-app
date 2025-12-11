@@ -7,7 +7,7 @@ export function githubUsername(str: string) {
   return str.replace(/[^a-z0-9-.]/gi, "").replace(/^[.-]+|[.-]+$/g, "");
 }
 
-export function profileImageURL(user: User, size: number) {
+export function profileImageURL(user: Omit<User, "bio">, size: number) {
   let url = `https://avatars.githubusercontent.com/u/${user.githubId}?v=4&size=${size}`;
   if (user.username === cfg.VITE_GUEST_USERNAME) {
     url = `https://api.dicebear.com/9.x/identicon/svg?backgroundColor=ffffff&seed=guest_#${user.id}&size=${size}`;
