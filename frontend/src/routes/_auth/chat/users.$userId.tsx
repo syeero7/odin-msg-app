@@ -1,11 +1,11 @@
 import { infiniteQueryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { LoaderCircle } from "lucide-react";
 import z from "zod";
 
 import { ChatForm } from "@/components/ChatForm";
 import { MessageCard } from "@/components/MessageCard";
 import { Navbar } from "@/components/Navbar";
+import { LoadMoreButton } from "@/components/LoadMoreButton";
 import { useSocket } from "@/components/SocketProvider";
 import { useMessagesQuery } from "@/hooks/use-messaages-query";
 import { getDirectMessages } from "@/lib/api";
@@ -92,16 +92,11 @@ function Chat({ user }: { user: User }) {
   return (
     <section className="flex flex-col">
       <div className="overflow-y-auto flex flex-col">
-        <div className="flex">
-          <button
-            onClick={fetchMoreMessages}
-            disabled={!canLoadMore}
-            className="mx-auto max-w-fit hover:text-green-500 border-2 my-1 px-3 py-1 text-sm rounded-[999px] flex gap-2 items-center"
-          >
-            <span>{isFetching ? "Loading" : "Load more"}</span>
-            {isFetching && <LoaderCircle className="animate-spin size-4" />}
-          </button>
-        </div>
+        <LoadMoreButton
+          fetching={isFetching}
+          fetcher={fetchMoreMessages}
+          disabled={!canLoadMore}
+        />
         {messages.length > 0 &&
           messages.map((msg) => (
             <MessageCard
