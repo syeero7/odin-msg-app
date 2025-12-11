@@ -10,6 +10,7 @@ import z from "zod";
 import { createGroup, getGroups } from "@/lib/api";
 import { Navbar } from "@/components/Navbar";
 import { GROUPS } from "@/lib/query-keys";
+import { groupImageURL } from "@/lib/utils";
 
 const groupsQuery = queryOptions({
   queryKey: GROUPS,
@@ -76,8 +77,6 @@ function GroupList() {
           <p>No groups</p>
         ) : (
           data.groups.map(({ id, name }) => {
-            const imgURL = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${name}-${id}-G&size=40`;
-
             return (
               <Link
                 to={"/chat/groups/$groupId"}
@@ -87,7 +86,7 @@ function GroupList() {
                 key={id}
               >
                 <img
-                  src={imgURL}
+                  src={groupImageURL(id, name)}
                   alt=""
                   aria-hidden
                   className="rounded-[50%] size-10"

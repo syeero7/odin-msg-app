@@ -15,6 +15,10 @@ export function profileImageURL(user: User, size: number) {
   return url;
 }
 
+export function groupImageURL(id: number, name: string) {
+  return `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${name}-${id}-G&size=40`;
+}
+
 export async function processFormData(formData: FormData) {
   const data: { type: string; content: string }[] = [];
   const text = z.string().parse(formData.get("text"));
