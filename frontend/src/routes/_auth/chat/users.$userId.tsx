@@ -12,6 +12,7 @@ import { getDirectMessages } from "@/lib/api";
 import { DIRECT_MSG } from "@/lib/query-keys";
 import { userOptions } from "@/lib/query-options";
 import { githubUsername, processFormData, profileImageURL } from "@/lib/utils";
+import type { User } from "@shared/prisma/client";
 
 export const Route = createFileRoute("/_auth/chat/users/$userId")({
   component: RouteComponent,
@@ -34,43 +35,39 @@ function directMsgOptions(recipient_id: number | string) {
 
 function RouteComponent() {
   const { userId } = Route.useParams();
+  const { data, isLoading } = useQuery(userOptions(userId));
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <main className="chat-container">
-      <Header userId={userId} />
-      <Chat userId={userId} />
+      <Header user={data!.user} />
+      <Chat user={data!.user} />
       <Navbar />
     </main>
   );
 }
 
-function Header({ userId }: { userId: string }) {
-  const { data } = useQuery(userOptions(userId));
-
+function Header({ user }: { user: User }) {
   return (
     <header className="min-h-[4.5em] flex gap-4 items-center">
-      {data && (
-        <>
-          <img
-            alt=""
-            src={profileImageURL(data.user, 40)}
-            className="size-10 rounded-[50%] ml-4"
-          />
-          <h1 className="text-2xl font-bold">
-            {githubUsername(data.user.username)}
-          </h1>
-        </>
-      )}
+      <img
+        alt=""
+        src={profileImageURL(user, 40)}
+        className="size-10 rounded-[50%] ml-4"
+      />
+      <h1 className="text-2xl font-bold">{githubUsername(user.username)}</h1>
     </header>
   );
 }
 
-function Chat({ userId }: { userId: string }) {
+function Chat({ user }: { user: User }) {
   const { auth } = Route.useRouteContext();
   const socket = useSocket();
   const { scrollRef, messages, isFetching, fetchMoreMessages, canLoadMore } =
-    useMessagesQuery(directMsgOptions(userId), "direct", socket);
-  const userQ = useQuery(userOptions(userId));
+    useMessagesQuery(directMsgOptions(user.id), "direct", socket);
 
   const formAction = async (formData: FormData) => {
     if (!socket) return;
@@ -78,7 +75,7 @@ function Chat({ userId }: { userId: string }) {
     processed.forEach(({ type, content }) => {
       socket.emit(
         "send_direct",
-        { content, recipientId: userId, contentType: type },
+        { content, recipientId: user.id, contentType: type },
         (res: unknown) => console.log(res),
       );
     });
@@ -89,7 +86,7 @@ function Chat({ userId }: { userId: string }) {
       return auth.user;
     }
 
-    return userQ.data!.user;
+    return user;
   };
 
   return (
