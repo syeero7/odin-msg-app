@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import type {
   InfiniteData,
@@ -31,6 +31,7 @@ type UseMessagesOptions<T> = UndefinedInitialDataInfiniteOptions<
 type UseMessagesReturnType<T extends MessageResponse> = {
   messages: T["messages"];
   fetchMoreMessages: () => void;
+  scrollRef: RefObject<HTMLDivElement | null>;
   canLoadMore: boolean;
   isFetching: boolean;
 };
@@ -38,12 +39,23 @@ type UseMessagesReturnType<T extends MessageResponse> = {
 export function useMessagesQuery<T extends MessageResponse>(
   options: UseMessagesOptions<T>,
   messageType: "direct" | "group",
-  onReceive: () => void,
   socket?: Socket,
 ): Readonly<UseMessagesReturnType<T>> {
   const queryClient = useQueryClient();
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [state, setState] = useState({ first: true, scroll: false });
+  const { data, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage } =
     useInfiniteQuery(options);
+
+  const firstLoad = state.first && !isLoading;
+  useEffect(() => {
+    if (scrollRef.current && (firstLoad || state.scroll)) {
+      scrollRef.current.scrollIntoView({
+        behavior: firstLoad ? "instant" : "smooth",
+      });
+      setState({ first: false, scroll: false });
+    }
+  }, [state.scroll, firstLoad]);
 
   useEffect(() => {
     if (!socket) return;
@@ -64,7 +76,7 @@ export function useMessagesQuery<T extends MessageResponse>(
           ],
         };
       });
-      onReceive();
+      setState((s) => ({ ...s, scroll: true }));
     };
     socket.on(`receive_${messageType}`, listener);
 
@@ -83,6 +95,7 @@ export function useMessagesQuery<T extends MessageResponse>(
   return {
     fetchMoreMessages,
     messages,
+    scrollRef,
     canLoadMore,
     isFetching: isFetchingNextPage,
   } as const;

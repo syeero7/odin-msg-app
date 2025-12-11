@@ -8,7 +8,6 @@ import { MessageCard } from "@/components/MessageCard";
 import { Navbar } from "@/components/Navbar";
 import { useSocket } from "@/components/SocketProvider";
 import { useMessagesQuery } from "@/hooks/use-messaages-query";
-import { useScrollToView } from "@/hooks/use-scroll-view";
 import { getDirectMessages } from "@/lib/api";
 import { DIRECT_MSG } from "@/lib/query-keys";
 import { userOptions } from "@/lib/query-options";
@@ -69,9 +68,8 @@ function Header({ userId }: { userId: string }) {
 function Chat({ userId }: { userId: string }) {
   const { auth } = Route.useRouteContext();
   const socket = useSocket();
-  const { scrollRef, scrollToView } = useScrollToView();
-  const { messages, isFetching, fetchMoreMessages, canLoadMore } =
-    useMessagesQuery(directMsgOptions(userId), "direct", scrollToView, socket);
+  const { scrollRef, messages, isFetching, fetchMoreMessages, canLoadMore } =
+    useMessagesQuery(directMsgOptions(userId), "direct", socket);
   const userQ = useQuery(userOptions(userId));
 
   const formAction = async (formData: FormData) => {
@@ -96,7 +94,7 @@ function Chat({ userId }: { userId: string }) {
 
   return (
     <section className="flex flex-col">
-      <div className="overflow-y-auto ">
+      <div className="overflow-y-auto flex flex-col">
         <div className="flex">
           <button
             onClick={fetchMoreMessages}
@@ -115,7 +113,7 @@ function Chat({ userId }: { userId: string }) {
               sender={getSender(msg.senderId)}
             />
           ))}
-        <div ref={scrollRef}></div>
+        <div className="mt-auto" ref={scrollRef}></div>
       </div>
 
       <ChatForm formAction={formAction} disabled={false} />
