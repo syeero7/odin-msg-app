@@ -74,7 +74,7 @@ export function handleWS(io: SocketIO) {
         },
       });
 
-      socket.to(`group:${recipientId}`).emit("receive_group", msg);
+      io.to(`group:${recipientId}`).emit("receive_group", msg);
       cb({ status: 200 });
     });
   });
