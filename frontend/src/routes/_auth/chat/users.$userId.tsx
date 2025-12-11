@@ -1,5 +1,5 @@
 import { infiniteQueryOptions, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import z from "zod";
 
 import { ChatForm } from "@/components/ChatForm";
@@ -58,7 +58,16 @@ function Header({ user }: { user: User }) {
         src={profileImageURL(user, 40)}
         className="size-10 rounded-[50%] ml-4"
       />
-      <h1 className="text-2xl font-bold">{githubUsername(user.username)}</h1>
+      <h1 className="text-2xl font-bold">
+        <Link
+          to="/users/$userId"
+          params={{ userId: user.id.toString() }}
+          className="hover:text-cyan-500"
+          viewTransition
+        >
+          {githubUsername(user.username)}
+        </Link>
+      </h1>
     </header>
   );
 }
@@ -91,7 +100,7 @@ function Chat({ user }: { user: User }) {
 
   return (
     <section className="flex flex-col">
-      <div className="overflow-y-auto flex flex-col">
+      <div className="overflow-y-auto grow flex flex-col">
         <LoadMoreButton
           fetching={isFetching}
           fetcher={fetchMoreMessages}

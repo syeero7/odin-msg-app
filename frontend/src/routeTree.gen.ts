@@ -15,6 +15,8 @@ import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthEditProfileRouteImport } from './routes/_auth/edit-profile'
 import { Route as AuthUsersIndexRouteImport } from './routes/_auth/users/index'
 import { Route as AuthGroupsIndexRouteImport } from './routes/_auth/groups/index'
+import { Route as AuthUsersUserIdRouteImport } from './routes/_auth/users/$userId'
+import { Route as AuthGroupsGroupIdSettingsRouteImport } from './routes/_auth/groups/$groupId.settings'
 import { Route as AuthChatUsersUserIdRouteImport } from './routes/_auth/chat/users.$userId'
 import { Route as AuthChatGroupsGroupIdRouteImport } from './routes/_auth/chat/groups.$groupId'
 
@@ -47,6 +49,17 @@ const AuthGroupsIndexRoute = AuthGroupsIndexRouteImport.update({
   path: '/groups/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthUsersUserIdRoute = AuthUsersUserIdRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthGroupsGroupIdSettingsRoute =
+  AuthGroupsGroupIdSettingsRouteImport.update({
+    id: '/groups/$groupId/settings',
+    path: '/groups/$groupId/settings',
+    getParentRoute: () => AuthRoute,
+  } as any)
 const AuthChatUsersUserIdRoute = AuthChatUsersUserIdRouteImport.update({
   id: '/chat/users/$userId',
   path: '/chat/users/$userId',
@@ -62,19 +75,23 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/edit-profile': typeof AuthEditProfileRoute
   '/': typeof AuthIndexRoute
+  '/users/$userId': typeof AuthUsersUserIdRoute
   '/groups': typeof AuthGroupsIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/chat/groups/$groupId': typeof AuthChatGroupsGroupIdRoute
   '/chat/users/$userId': typeof AuthChatUsersUserIdRoute
+  '/groups/$groupId/settings': typeof AuthGroupsGroupIdSettingsRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/edit-profile': typeof AuthEditProfileRoute
   '/': typeof AuthIndexRoute
+  '/users/$userId': typeof AuthUsersUserIdRoute
   '/groups': typeof AuthGroupsIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/chat/groups/$groupId': typeof AuthChatGroupsGroupIdRoute
   '/chat/users/$userId': typeof AuthChatUsersUserIdRoute
+  '/groups/$groupId/settings': typeof AuthGroupsGroupIdSettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -82,10 +99,12 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_auth/edit-profile': typeof AuthEditProfileRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/users/$userId': typeof AuthUsersUserIdRoute
   '/_auth/groups/': typeof AuthGroupsIndexRoute
   '/_auth/users/': typeof AuthUsersIndexRoute
   '/_auth/chat/groups/$groupId': typeof AuthChatGroupsGroupIdRoute
   '/_auth/chat/users/$userId': typeof AuthChatUsersUserIdRoute
+  '/_auth/groups/$groupId/settings': typeof AuthGroupsGroupIdSettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -93,29 +112,35 @@ export interface FileRouteTypes {
     | '/login'
     | '/edit-profile'
     | '/'
+    | '/users/$userId'
     | '/groups'
     | '/users'
     | '/chat/groups/$groupId'
     | '/chat/users/$userId'
+    | '/groups/$groupId/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/edit-profile'
     | '/'
+    | '/users/$userId'
     | '/groups'
     | '/users'
     | '/chat/groups/$groupId'
     | '/chat/users/$userId'
+    | '/groups/$groupId/settings'
   id:
     | '__root__'
     | '/_auth'
     | '/login'
     | '/_auth/edit-profile'
     | '/_auth/'
+    | '/_auth/users/$userId'
     | '/_auth/groups/'
     | '/_auth/users/'
     | '/_auth/chat/groups/$groupId'
     | '/_auth/chat/users/$userId'
+    | '/_auth/groups/$groupId/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -167,6 +192,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthGroupsIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/users/$userId': {
+      id: '/_auth/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/users/$userId'
+      preLoaderRoute: typeof AuthUsersUserIdRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/groups/$groupId/settings': {
+      id: '/_auth/groups/$groupId/settings'
+      path: '/groups/$groupId/settings'
+      fullPath: '/groups/$groupId/settings'
+      preLoaderRoute: typeof AuthGroupsGroupIdSettingsRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/chat/users/$userId': {
       id: '/_auth/chat/users/$userId'
       path: '/chat/users/$userId'
@@ -187,19 +226,23 @@ declare module '@tanstack/react-router' {
 interface AuthRouteChildren {
   AuthEditProfileRoute: typeof AuthEditProfileRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthUsersUserIdRoute: typeof AuthUsersUserIdRoute
   AuthGroupsIndexRoute: typeof AuthGroupsIndexRoute
   AuthUsersIndexRoute: typeof AuthUsersIndexRoute
   AuthChatGroupsGroupIdRoute: typeof AuthChatGroupsGroupIdRoute
   AuthChatUsersUserIdRoute: typeof AuthChatUsersUserIdRoute
+  AuthGroupsGroupIdSettingsRoute: typeof AuthGroupsGroupIdSettingsRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthEditProfileRoute: AuthEditProfileRoute,
   AuthIndexRoute: AuthIndexRoute,
+  AuthUsersUserIdRoute: AuthUsersUserIdRoute,
   AuthGroupsIndexRoute: AuthGroupsIndexRoute,
   AuthUsersIndexRoute: AuthUsersIndexRoute,
   AuthChatGroupsGroupIdRoute: AuthChatGroupsGroupIdRoute,
   AuthChatUsersUserIdRoute: AuthChatUsersUserIdRoute,
+  AuthGroupsGroupIdSettingsRoute: AuthGroupsGroupIdSettingsRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

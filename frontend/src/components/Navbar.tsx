@@ -28,6 +28,7 @@ export function Navbar() {
           key={to}
           to={to}
           viewTransition
+          activeOptions={{ exact: true }}
           activeProps={{ className: "font-bold text-cyan-500" }}
           className="md:flex gap-4 max-w-fit hover:text-cyan-400"
         >
