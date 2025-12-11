@@ -40,7 +40,13 @@ main {
 }
 
 :disabled {
-  @apply opacity-60;
+  @apply opacity-60 cursor-not-allowed;
+}
+
+.unset-disabled {
+  &:disabled {
+    @apply opacity-100 cursor-default;
+  }
 }
 
 .chat-container {
