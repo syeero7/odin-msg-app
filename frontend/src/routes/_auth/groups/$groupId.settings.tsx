@@ -73,6 +73,13 @@ function Header({ group, queryClient }: SettingsProps) {
     },
   });
 
+  const clickHandler = () => {
+    if (!confirm(`Are you sure you want to delete the "${group.name}" group?`))
+      return;
+
+    mutation.mutate();
+  };
+
   return (
     <header className="min-h-[4.5em] flex gap-4 items-center">
       <GoBack
@@ -88,7 +95,7 @@ function Header({ group, queryClient }: SettingsProps) {
       <h1 className="text-2xl font-bold flex-1">{group.name}</h1>
       <button
         aria-label="delete group"
-        onClick={() => mutation.mutate()}
+        onClick={clickHandler}
         className="text-red-500 size-7 mx-4 hover:text-red-400"
       >
         <Trash className="size-6 m-auto" />
@@ -134,6 +141,14 @@ function GroupSettings({ group, queryClient }: SettingsProps) {
   const activeQuery = membersQuery.isEnabled ? membersQuery : nonmembersQuery;
   const ActionIcon = action === "add" ? PlusSquare : MinusSquare;
 
+  const clickHandler = (userId: number, username: string) => {
+    return () => {
+      const confirmMsg = `Are you sure you want to remove "${username}" from the group?`;
+      if (action === "remove" && !confirm(confirmMsg)) return;
+      mutation.mutate(userId);
+    };
+  };
+
   return (
     <section className="flex flex-col">
       <div className="flex justify-around text-sm pb-4 pt-2  mx-3 text-center border-b border-b-muted">
@@ -174,7 +189,7 @@ function GroupSettings({ group, queryClient }: SettingsProps) {
               title={`${action} member`}
               aria-label={`${action} member`}
               className={`${action === "add" ? "text-green-500 hover:text-green-400" : "text-red-500 hover:text-red-400"} ml-auto`}
-              onClick={() => mutation.mutate(user.id)}
+              onClick={clickHandler(user.id, user.username)}
             >
               <ActionIcon className="size-8" />
             </button>

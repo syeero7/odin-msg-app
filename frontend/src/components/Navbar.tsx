@@ -20,6 +20,7 @@ export function Navbar({ hiddenOnMobile }: NavbarProps) {
   const client = useQueryClient();
 
   const handleClick = () => {
+    if (!confirm("Are you sure you want to logout?")) return;
     logout();
     client.removeQueries({ queryKey: CURRENT_USER });
     navigate({ to: "/login", viewTransition: true });
