@@ -24,6 +24,7 @@ import {
 } from "@/lib/api";
 import { githubUsername, groupImageURL, profileImageURL } from "@/lib/utils";
 import type { Group } from "@shared/prisma/client";
+import { GoBack } from "@/components/GoBack";
 
 export const Route = createFileRoute("/_auth/groups/$groupId/settings")({
   component: RouteComponent,
@@ -45,7 +46,7 @@ function RouteComponent() {
   }
 
   if (data!.group.creatorId !== auth.user!.id) {
-    return <Navigate to="/groups" />;
+    return <Navigate to="/groups" replace viewTransition />;
   }
 
   return (
@@ -74,10 +75,14 @@ function Header({ group, queryClient }: SettingsProps) {
 
   return (
     <header className="min-h-[4.5em] flex gap-4 items-center">
+      <GoBack
+        to="/chat/groups/$groupId"
+        params={{ groupId: group.id.toString() }}
+      />
       <img
         alt=""
         src={groupImageURL(group.id, group.name)}
-        className="size-10 rounded-[50%] ml-4"
+        className="size-10 rounded-[50%]"
         fetchPriority="low"
       />
       <h1 className="text-2xl font-bold flex-1">{group.name}</h1>
