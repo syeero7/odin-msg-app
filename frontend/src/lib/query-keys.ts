@@ -15,3 +15,5 @@ export const GROUP = (groupId: number | string): QueryKey => {
 export const GROUP_MSG = (groupId: number | string): QueryKey => {
   return ["group_msg", `${groupId}`];
 };
+export const GROUP_MEMBERS = ["members"];
+export const GROUP_NONMEMBERS = ["nonmembers"];

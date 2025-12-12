@@ -22,7 +22,7 @@ export function getUsers() {
   return fetcher<{ users: User[] }>("/users", "GET", ["auth"]);
 }
 
-export function getUserById(userId: number | string) {
+export function getUserById(userId: urlParam) {
   return fetcher<{ user: User }>(`/users/${userId}`, "GET", ["auth"]);
 }
 
@@ -30,14 +30,44 @@ export function updateUserBio(data: Pick<User, "bio">) {
   return fetcher("/users", "PUT", ["auth", "json"], data);
 }
 
-export function getGroupById(groupId: number | string) {
+export function getGroupById(groupId: urlParam) {
   return fetcher<{ group: Group }>(`/groups/${groupId}`, "GET", ["auth"]);
 }
+
+export function deleteGroup(groupId: urlParam) {
+  return fetcher(`/groups/${groupId}`, "DELETE", ["auth"]);
+}
+
+export function getGroupMembers(groupId: urlParam) {
+  return fetcher<{ users: User[] }>(`/groups/${groupId}/members`, "GET", [
+    "auth",
+  ]);
+}
+
+export function getGroupNonmembers(groupId: urlParam) {
+  return fetcher<{ users: User[] }>(`/groups/${groupId}/nonmembers`, "GET", [
+    "auth",
+  ]);
+}
+
+export function updateGroupMember(
+  groupId: urlParam,
+  userId: urlParam,
+  action: "add" | "remove",
+) {
+  return fetcher(
+    `/groups/${groupId}/members/${userId}?action=${action}`,
+    "PUT",
+    ["auth"],
+  );
+}
+
+type urlParam = string | number;
 
 export type MessageQueries = {
   limit?: number;
   cursor?: number;
-  recipient_id: number | string;
+  recipient_id: urlParam;
 };
 
 export function getDirectMessages(q: MessageQueries) {

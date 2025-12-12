@@ -1,5 +1,5 @@
 import { infiniteQueryOptions, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import z from "zod";
 
 import { ChatForm } from "@/components/ChatForm";
@@ -13,6 +13,7 @@ import { GROUP_MSG } from "@/lib/query-keys";
 import { groupsOptions } from "@/lib/query-options";
 import { groupImageURL, processFormData } from "@/lib/utils";
 import type { Group } from "@shared/prisma/client";
+import { Settings } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/chat/groups/$groupId")({
   component: RouteComponent,
@@ -51,6 +52,8 @@ function RouteComponent() {
 }
 
 function Header({ group }: { group: Group }) {
+  const { auth } = Route.useRouteContext();
+
   return (
     <header className="min-h-[4.5em] flex gap-4 items-center">
       <img
@@ -58,7 +61,17 @@ function Header({ group }: { group: Group }) {
         src={groupImageURL(group.id, group.name)}
         className="size-10 rounded-[50%] ml-4"
       />
-      <h1 className="text-2xl font-bold">{group.name}</h1>
+      <h1 className="text-2xl font-bold flex-1">{group.name}</h1>
+      {auth.user!.id === group.creatorId && (
+        <Link
+          to="/groups/$groupId/settings"
+          params={{ groupId: group.id.toString() }}
+          viewTransition
+          className="hover:text-cyan-500 mx-4 size-7"
+        >
+          <Settings aria-label="group settings" className="size-7" />
+        </Link>
+      )}
     </header>
   );
 }

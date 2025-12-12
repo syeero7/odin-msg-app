@@ -53,7 +53,7 @@ main {
   @apply flex flex-col max-md:h-screen;
 
   > section {
-    @apply grow overflow-auto min-h-0 p-2;
+    @apply grow overflow-auto min-h-0 py-2 px-2.5;
     scrollbar-color: var(--color-background) var(--color-muted);
     scrollbar-width: thin;
 
