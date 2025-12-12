@@ -6,6 +6,7 @@ import { ChatForm } from "@/components/ChatForm";
 import { MessageCard } from "@/components/MessageCard";
 import { Navbar } from "@/components/Navbar";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
+import { GoBack } from "@/components/GoBack";
 import { useSocket } from "@/components/SocketProvider";
 import { useMessagesQuery } from "@/hooks/use-messaages-query";
 import { getDirectMessages } from "@/lib/api";
@@ -45,7 +46,7 @@ function RouteComponent() {
     <main className="chat-container">
       <Header user={data!.user} />
       <Chat user={data!.user} />
-      <Navbar />
+      <Navbar hiddenOnMobile />
     </main>
   );
 }
@@ -53,10 +54,11 @@ function RouteComponent() {
 function Header({ user }: { user: User }) {
   return (
     <header className="min-h-[4.5em] flex gap-4 items-center">
+      <GoBack to="/users" hiddenOnDesktop />
       <img
         alt=""
         src={profileImageURL(user, 40)}
-        className="size-10 rounded-[50%] ml-4"
+        className="size-10 rounded-[50%] md:ml-4"
         fetchPriority="low"
       />
       <h1 className="text-2xl font-bold">

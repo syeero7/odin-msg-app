@@ -1,11 +1,13 @@
 import { infiniteQueryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Settings } from "lucide-react";
 import z from "zod";
 
 import { ChatForm } from "@/components/ChatForm";
 import { MessageCard } from "@/components/MessageCard";
 import { Navbar } from "@/components/Navbar";
 import { LoadMoreButton } from "@/components/LoadMoreButton";
+import { GoBack } from "@/components/GoBack";
 import { useSocket } from "@/components/SocketProvider";
 import { useMessagesQuery } from "@/hooks/use-messaages-query";
 import { getGroupMessages } from "@/lib/api";
@@ -13,7 +15,6 @@ import { GROUP_MSG } from "@/lib/query-keys";
 import { groupsOptions } from "@/lib/query-options";
 import { groupImageURL, processFormData } from "@/lib/utils";
 import type { Group } from "@shared/prisma/client";
-import { Settings } from "lucide-react";
 
 export const Route = createFileRoute("/_auth/chat/groups/$groupId")({
   component: RouteComponent,
@@ -46,7 +47,7 @@ function RouteComponent() {
     <main className="chat-container">
       <Header group={data!.group} />
       <Chat group={data!.group} />
-      <Navbar />
+      <Navbar hiddenOnMobile />
     </main>
   );
 }
@@ -56,10 +57,11 @@ function Header({ group }: { group: Group }) {
 
   return (
     <header className="min-h-[4.5em] flex gap-4 items-center">
+      <GoBack to="/groups" hiddenOnDesktop />
       <img
         alt=""
         src={groupImageURL(group.id, group.name)}
-        className="size-10 rounded-[50%] ml-4"
+        className="size-10 rounded-[50%] md:mx-4"
         fetchPriority="low"
       />
       <h1 className="text-2xl font-bold flex-1">{group.name}</h1>

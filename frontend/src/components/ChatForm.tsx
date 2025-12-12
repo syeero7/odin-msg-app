@@ -12,7 +12,7 @@ export function ChatForm({ disabled, formAction }: ChatFormProps) {
   return (
     <form
       action={formAction}
-      className="flex gap-2 pt-2.5 border-t border-t-muted sm:gap-4"
+      className="flex gap-2 pt-3.5 max-md:pb-2 border-t border-t-muted sm:gap-4"
       onSubmit={() => setSelected(false)}
     >
       <label aria-label="upload image" className="file-upload">

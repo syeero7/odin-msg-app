@@ -1,9 +1,18 @@
 import { Link, type LinkProps } from "@tanstack/react-router";
 import { ChevronLeft } from "lucide-react";
 
-export function GoBack(props: Pick<LinkProps, "to" | "params">) {
+type GoBackLinkProps = Pick<LinkProps, "to" | "params"> & {
+  hiddenOnDesktop?: boolean;
+};
+
+export function GoBack({ to, params, hiddenOnDesktop }: GoBackLinkProps) {
   return (
-    <Link {...props} viewTransition className="size-7 hover:text-cyan-500">
+    <Link
+      to={to}
+      params={params}
+      viewTransition
+      className={`size-7 ml-2 hover:text-cyan-500 ${hiddenOnDesktop ? "md:hidden" : ""}`}
+    >
       <ChevronLeft className="size-7" />
     </Link>
   );

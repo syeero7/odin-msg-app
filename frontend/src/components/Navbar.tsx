@@ -4,13 +4,17 @@ import { useQueryClient } from "@tanstack/react-query";
 import { CURRENT_USER } from "@/lib/query-keys";
 import { useAuth } from "./AuthProvider";
 
+type NavbarProps = {
+  hiddenOnMobile?: boolean;
+};
+
 const options = linkOptions([
   { to: "/users", label: "Users", Icon: Users },
   { to: "/groups", label: "Groups", Icon: LayoutGrid },
   { to: "/edit-profile", label: "Edit profile", Icon: UserPen },
 ]);
 
-export function Navbar() {
+export function Navbar({ hiddenOnMobile }: NavbarProps) {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const client = useQueryClient();
@@ -22,7 +26,9 @@ export function Navbar() {
   };
 
   return (
-    <nav className="flex gap-4 p-4  sm:px-4 md:flex-col md:w-40">
+    <nav
+      className={`sm:px-4 md:flex-col flex md:w-40 ${hiddenOnMobile ? "max-md:hidden" : ""}`}
+    >
       {options.map(({ to, Icon, label }) => (
         <Link
           key={to}
