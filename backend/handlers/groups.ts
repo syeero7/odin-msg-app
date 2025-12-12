@@ -138,7 +138,7 @@ export const updateGroupMembers = asyncHandler(async (req, res) => {
     }
 
     case "remove": {
-      if (userId === group.creatorId || userId !== currentUid) {
+      if (currentUid !== group.creatorId) {
         return res.sendStatus(403);
       }
 
