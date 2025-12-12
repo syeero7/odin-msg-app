@@ -17,6 +17,7 @@ body {
   @apply m-0 min-h-screen font-sans min-w-xs bg-background text-foreground;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scrollbar-gutter: stable;
 }
 
 button {
@@ -32,11 +33,11 @@ a * {
 }
 
 main {
-  @apply max-w-5xl mx-auto;
+  @apply max-w-5xl w-full;
 }
 
 #app {
-  @apply min-h-screen md:flex;
+  @apply min-h-screen md:flex justify-center;
 }
 
 :disabled {
