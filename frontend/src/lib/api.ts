@@ -62,6 +62,15 @@ export function updateGroupMember(
   );
 }
 
+export function uploadImage(data: { image: File }) {
+  return fetcher<{ url: string }>(
+    "/assets/images",
+    "POST",
+    ["auth", "multipart"],
+    data,
+  );
+}
+
 type urlParam = string | number;
 
 export type MessageQueries = {
@@ -91,24 +100,10 @@ async function fetcher<T>(
 ): Promise<T> {
   const url = `${cfg.VITE_BACKEND_URL}${path}`;
   const options: RequestInit = { method };
-
-  if ((method === "POST" || method === "PUT") && body) {
-    options.body = JSON.stringify(body);
-  }
-
-  if (headers?.length) {
-    options.headers = generateHeaders(headers);
-  }
-
-  const res = await fetch(url, options);
-  if (!res.ok) throw res;
-  return (await res.json()) as T;
-}
-
-function generateHeaders(headers: FetcherHeader[]) {
   const tmp: Record<string, string> = {};
+  const uploadRequest = method === "POST" || method === "PUT";
 
-  headers.forEach((header) => {
+  headers?.forEach((header) => {
     switch (header) {
       case "auth": {
         const token = getItem();
@@ -118,17 +113,29 @@ function generateHeaders(headers: FetcherHeader[]) {
 
       case "json": {
         tmp["Content-Type"] = "application/json";
+        if (uploadRequest) {
+          options.body = JSON.stringify(body);
+        }
         break;
       }
 
       case "multipart": {
-        tmp["Content-Type"] = "";
-        break;
+        const formData = new FormData();
+        for (const key in body) {
+          const val = body[key];
+          if (!(val instanceof Blob)) throw new Error(`$${key} is not a Blob`);
+          formData.append(key, val);
+          options.body = formData;
+        }
       }
     }
   });
 
-  return tmp;
+  options.headers = tmp;
+
+  const res = await fetch(url, options);
+  if (!res.ok) throw res;
+  return (await res.json()) as T;
 }
 
 function generateQueryString(queries: MessageQueries) {

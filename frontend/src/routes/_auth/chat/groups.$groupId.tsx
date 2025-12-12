@@ -109,7 +109,7 @@ function Chat({ group }: { group: Group }) {
         <div className="mt-auto" ref={scrollRef}></div>
       </div>
 
-      <ChatForm formAction={formAction} disabled={false} />
+      <ChatForm formAction={formAction} disabled={isFetching} />
     </section>
   );
 }

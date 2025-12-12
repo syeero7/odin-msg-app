@@ -1,6 +1,7 @@
 import type { User } from "@shared/prisma/client";
 import { cfg } from "./env";
 import z from "zod";
+import { uploadImage } from "./api";
 
 export function githubUsername(str: string) {
   if (str !== cfg.VITE_GUEST_USERNAME) return str;
@@ -25,7 +26,9 @@ export async function processFormData(formData: FormData) {
   const image = z.instanceof(File).parse(formData.get("image"));
 
   if (text.length) data.push({ type: "text", content: text });
-  if (image.size) {
+  if (image.size && image.type.startsWith("image")) {
+    const { url } = await uploadImage({ image });
+    data.push({ type: "image", content: url });
   }
 
   return data;

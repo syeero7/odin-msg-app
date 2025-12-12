@@ -8,7 +8,7 @@ type MessageCardProps = {
 
 export function MessageCard({ message, sender }: MessageCardProps) {
   return (
-    <article className="flex gap-3 mb-2">
+    <article className="flex gap-3 mb-2 mr-2">
       <img
         alt=""
         src={profileImageURL(sender, 32)}
