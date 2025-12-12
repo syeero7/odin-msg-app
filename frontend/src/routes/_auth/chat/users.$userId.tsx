@@ -57,6 +57,7 @@ function Header({ user }: { user: User }) {
         alt=""
         src={profileImageURL(user, 40)}
         className="size-10 rounded-[50%] ml-4"
+        fetchPriority="low"
       />
       <h1 className="text-2xl font-bold">
         <Link

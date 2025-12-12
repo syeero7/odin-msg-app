@@ -52,6 +52,7 @@ function UserList() {
                 alt=""
                 aria-hidden
                 className="size-10 rounded-[50%]"
+                fetchPriority="low"
               />
               <span className="overflow-x-auto mt-1.5">
                 {githubUsername(user.username)}

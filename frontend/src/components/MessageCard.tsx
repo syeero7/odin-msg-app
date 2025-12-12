@@ -13,6 +13,7 @@ export function MessageCard({ message, sender }: MessageCardProps) {
         alt=""
         src={profileImageURL(sender, 32)}
         className="size-8 rounded-[50%]"
+        fetchPriority="low"
       />
       <div className="grid">
         <strong>{githubUsername(sender.username)}</strong>

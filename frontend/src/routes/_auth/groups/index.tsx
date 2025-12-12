@@ -55,7 +55,7 @@ function Header() {
           type="text"
           maxLength={50}
           aria-label="group name"
-          className="px-2 py-1 border border-primary-foreground rounded-lg bg-secondary"
+          className="px-2 py-1 border border-primary-foreground rounded-lg bg-secondary min-w-32"
           disabled={mutation.isPending}
         />
         <button aria-label="create group" disabled={mutation.isPending}>

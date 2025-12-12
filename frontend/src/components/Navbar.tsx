@@ -22,7 +22,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="flex gap-4 p-4 sm:px-4 md:flex-col md:w-40">
+    <nav className="flex gap-4 p-4  sm:px-4 md:flex-col md:w-40">
       {options.map(({ to, Icon, label }) => (
         <Link
           key={to}

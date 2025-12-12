@@ -12,7 +12,7 @@ export function ChatForm({ disabled, formAction }: ChatFormProps) {
   return (
     <form
       action={formAction}
-      className="flex gap-4 px-2 py-3 border-t border-t-muted"
+      className="flex gap-2 pt-2.5 border-t border-t-muted sm:gap-4"
     >
       <label aria-label="upload image" className="file-upload">
         <ImageUp className={selected ? "text-green-500" : ""} />
@@ -32,7 +32,7 @@ export function ChatForm({ disabled, formAction }: ChatFormProps) {
         name="text"
         aria-label="text message"
         disabled={disabled}
-        className="bg-muted grow p-2 text-sm"
+        className="bg-muted grow p-2 text-sm min-w-32"
       />
       <button disabled={disabled} className="size-9 hover:text-green-500">
         <Send className="size-8" />

@@ -60,6 +60,7 @@ function Header({ group }: { group: Group }) {
         alt=""
         src={groupImageURL(group.id, group.name)}
         className="size-10 rounded-[50%] ml-4"
+        fetchPriority="low"
       />
       <h1 className="text-2xl font-bold flex-1">{group.name}</h1>
       {auth.user!.id === group.creatorId && (

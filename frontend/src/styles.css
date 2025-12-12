@@ -61,6 +61,10 @@ main {
       @apply text-center text-sm p-4 text-muted-foreground;
     }
   }
+
+  > nav {
+    @apply border-t border-t-muted;
+  }
 }
 
 .file-upload {
@@ -89,6 +93,7 @@ main {
 
     > nav {
       @apply border-r border-r-muted;
+      border-top: none;
       grid-area: 1/1/11/2;
     }
 

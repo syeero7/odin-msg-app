@@ -78,6 +78,7 @@ function Header({ group, queryClient }: SettingsProps) {
         alt=""
         src={groupImageURL(group.id, group.name)}
         className="size-10 rounded-[50%] ml-4"
+        fetchPriority="low"
       />
       <h1 className="text-2xl font-bold flex-1">{group.name}</h1>
       <button
@@ -159,6 +160,7 @@ function GroupSettings({ group, queryClient }: SettingsProps) {
               alt=""
               aria-hidden
               className="size-10 rounded-[50%]"
+              fetchPriority="low"
             />
             <strong className="overflow-x-auto">
               {githubUsername(user.username)}
