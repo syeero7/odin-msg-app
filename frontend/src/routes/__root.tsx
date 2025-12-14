@@ -6,6 +6,8 @@ import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
 
 import type { QueryClient } from "@tanstack/react-query";
 import type { AuthState } from "@/components/AuthProvider";
+import GeneralError from "@/components/GeneralError";
+import NotFoundError from "@/components/NotFoundError";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -30,4 +32,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       />
     </>
   ),
+  errorComponent: GeneralError,
+  notFoundComponent: NotFoundError,
 });
