@@ -23,6 +23,7 @@ server.use(
 );
 server.use(express.json());
 
+server.get("/health", (_, res) => res.sendStatus(200));
 server.use("/auth", auth);
 server.use(authenticate);
 
