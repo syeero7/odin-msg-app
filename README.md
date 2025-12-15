@@ -1,4 +1,4 @@
-# Smol Talk
+# Deliverer
 
 Real-time messaging app built using React.
 
