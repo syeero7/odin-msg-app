@@ -154,6 +154,7 @@ function GroupSettings({ group, queryClient }: SettingsProps) {
       <div className="flex justify-around text-sm pb-4 pt-2  mx-3 text-center border-b border-b-muted">
         {groupActions.map((action) => (
           <Link
+            key={action}
             to="/groups/$groupId/settings"
             viewTransition
             params={{ groupId: group.id.toString() }}
