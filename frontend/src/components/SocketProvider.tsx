@@ -3,7 +3,6 @@ import {
   use,
   useEffect,
   useRef,
-  useState,
   type PropsWithChildren,
 } from "react";
 import { io, Socket } from "socket.io-client";
@@ -17,7 +16,6 @@ export const useSocket = () => use(SocketContext);
 
 export function SocketProvider({ children }: PropsWithChildren) {
   const socketRef = useRef<Socket>(undefined);
-  const [connected, setConnected] = useState(false);
   const { user } = useAuth();
   const authenticated = !!user;
 
@@ -31,17 +29,18 @@ export function SocketProvider({ children }: PropsWithChildren) {
       });
     }
 
+    if (!socketRef.current) return;
     const socket = socketRef.current;
-    socket?.on("connect", () => setConnected(true));
-    socket?.on("disconnect", () => setConnected(false));
-    socket?.on("connect_error", (err) => console.error("ws error:", err));
-    socket?.connect();
+    socket.on("connect", () => console.log("ws connected"));
+    socket.on("disconnect", () => console.log("ws disconnected"));
+    socket.on("connect_error", (err) => console.error("ws error:", err));
+    socket.connect();
 
     return () => {
-      socket?.off("connect");
-      socket?.off("disconnect");
-      socket?.off("connect_error");
-      socket?.disconnect();
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("connect_error");
+      socket.disconnect();
       socketRef.current = undefined;
     };
   }, [authenticated]);
