@@ -8,6 +8,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import type { AuthState } from "@/components/AuthProvider";
 import GeneralError from "@/components/GeneralError";
 import NotFoundError from "@/components/NotFoundError";
+import { WithLoadingState } from "@/components/WithLoadingState";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -17,7 +18,9 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <Outlet />
+      <WithLoadingState>
+        <Outlet />
+      </WithLoadingState>
       <TanStackDevtools
         config={{
           position: "bottom-right",
