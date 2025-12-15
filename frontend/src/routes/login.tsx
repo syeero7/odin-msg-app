@@ -63,12 +63,14 @@ function RouteComponent() {
 
   return (
     <main className="grid gap-4 min-h-screen content-center justify-center">
-      <img src="/logo.webp" alt="" className="size-[200px] mx-auto" />
+      <img src="/logo.png" alt="" className="size-[200px] mx-auto" />
       <div>
         <h1 className="text-5xl text-shadow-emerald-600 text-shadow-lg text-center font-extrabold">
-          Smol Talk
+          Deliverer
         </h1>
-        <p className="italic text-center mt-3 text-sm">no small talk</p>
+        <p className="italic text-center mt-3 text-sm">
+          Send to one or send to all
+        </p>
 
         <div className="grid gap-3 mt-6">
           <Button text="Continue with Github" onClick={handleClick("github")}>
