@@ -108,7 +108,7 @@ function Button({ children, text, onClick }: ButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="rounded-lg flex gap-3 px-3.5 py-2.5 bg-primary border-2 border-muted transition-[border-color] hover:border-primary duration-300"
+      className="rounded-lg flex gap-3 px-3.5 py-2.5 bg-primary transition-[border-color] hover:border-cyan-500 duration-300 hover:drop-shadow-(--custom-drop-shadow)"
     >
       {children}
       <span className="text-secondary font-semibold">{text}</span>

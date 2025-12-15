@@ -11,6 +11,7 @@
   --color-muted-foreground: oklch(0.708 0 0);
   --color-destructive: oklch(0.704 0.191 22.216);
   --color-border: oklch(1 0 0 / 10%);
+  --custom-drop-shadow: 0 0 0.5em var(--color-cyan-500);
 }
 
 body {
