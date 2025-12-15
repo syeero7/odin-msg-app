@@ -9,7 +9,6 @@
     "dev:frontend": "npm run dev -w frontend",
     "start:frontend": "npm start -w frontend",
     "build:frontend": "npm run build -w frontend",
-    "generate": "npm run generate -w backend",
     "preview": "npm run preview -w frontend"
   },
   "keywords": [],
