@@ -1,3 +1,4 @@
+import { formatDistance } from "date-fns";
 import { githubUsername, profileImageURL } from "@/lib/utils";
 import type { Message, User } from "@shared/prisma/client";
 
@@ -19,8 +20,11 @@ export function MessageCard({ message, sender }: MessageCardProps) {
         <strong>{githubUsername(sender.username)}</strong>
         <div className="mt-1 p-2 bg-muted rounded-lg">
           {message.text && <p className="text-sm">{message.text}</p>}
-          {message.imageUrl && <img alt="" src={message.imageUrl} />}
+          {message.imageUrl && <img alt="image" src={message.imageUrl} />}
         </div>
+        <time dateTime={message.createdAt.toString()} className="text-xs mt-1">
+          {formatDistance(message.createdAt, new Date(), { addSuffix: true })}
+        </time>
       </div>
     </article>
   );
