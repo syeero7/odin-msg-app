@@ -1,5 +1,6 @@
 import { asyncHandler } from "@/lib/async-handler.js";
 import { prisma } from "@/lib/prisma-client.js";
+import { filterProfane } from "@/lib/profanity-filter.js";
 import z from "zod";
 
 export const getUsers = asyncHandler(async (req, res) => {
@@ -43,7 +44,9 @@ export const updateUser = asyncHandler(async (req, res) => {
 
   await prisma.user.update({
     where: { id: userId },
-    data: body.data,
+    data: {
+      bio: filterProfane(body.data.bio),
+    },
   });
 
   res.sendStatus(204);

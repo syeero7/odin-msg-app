@@ -1,6 +1,7 @@
 import z from "zod";
 import type { MessageCreateInput } from "@shared/prisma/models.js";
 import { prisma } from "@/lib/prisma-client.js";
+import { filterProfane } from "@/lib/profanity-filter.js";
 
 const messageData = z.object({
   recipientId: z.coerce.number(),
@@ -31,7 +32,7 @@ export function handleWS(io: SocketIO) {
         sender: { connect: { id: user.id } },
         recipient: { connect: { id: recipientId } },
       };
-      if (contentType === "text") data.text = content;
+      if (contentType === "text") data.text = filterProfane(content);
       if (contentType === "image") data.imageUrl = content;
       const msg = await prisma.message.create({ data });
 
@@ -63,7 +64,7 @@ export function handleWS(io: SocketIO) {
         sender: { connect: { id: user.id } },
         group: { connect: { id: recipientId } },
       };
-      if (contentType === "text") data.text = content;
+      if (contentType === "text") data.text = filterProfane(content);
       if (contentType === "image") data.imageUrl = content;
       const msg = await prisma.message.create({
         data,

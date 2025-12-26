@@ -1,6 +1,7 @@
 import z from "zod";
 import { asyncHandler } from "@/lib/async-handler.js";
 import { prisma } from "@/lib/prisma-client.js";
+import { filterProfane } from "@/lib/profanity-filter.js";
 
 export const getUserGroups = asyncHandler(async (req, res) => {
   const userId = req.user!.id;
@@ -28,7 +29,7 @@ export const createGroup = asyncHandler(async (req, res) => {
   const userId = req.user!.id;
   const group = await prisma.group.create({
     data: {
-      name: body.data.name,
+      name: filterProfane(body.data.name),
       creator: {
         connect: { id: userId },
       },
