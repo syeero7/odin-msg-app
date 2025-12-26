@@ -37,7 +37,9 @@ export const getCurrentUser = asyncHandler(async (req, res) => {
 
 export const updateUser = asyncHandler(async (req, res) => {
   const userId = req.user!.id;
-  const body = z.object({ bio: z.string().max(200) }).safeParse(req.body);
+  const body = z
+    .object({ bio: z.string().trim().max(200) })
+    .safeParse(req.body);
   if (!body.success) {
     return res.status(400).json({ message: body.error.message });
   }

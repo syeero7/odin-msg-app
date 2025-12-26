@@ -25,8 +25,7 @@ function RouteComponent() {
   });
 
   const formAction = (formData: FormData) => {
-    const bio = z.string().parse(formData.get("bio"));
-    if (!bio.length) return;
+    const bio = z.string().trim().parse(formData.get("bio"));
     mutation.mutate({ bio });
   };
 
