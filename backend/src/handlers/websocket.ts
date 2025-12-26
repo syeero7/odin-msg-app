@@ -6,7 +6,7 @@ import { filterProfane } from "@/lib/profanity-filter.js";
 const messageData = z.object({
   recipientId: z.coerce.number(),
   contentType: z.enum(["text", "image"]),
-  content: z.string().min(1).max(2000),
+  content: z.string().trim().min(1).max(2000),
 });
 
 export function handleWS(io: SocketIO) {

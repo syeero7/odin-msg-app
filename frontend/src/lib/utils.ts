@@ -22,7 +22,7 @@ export function groupImageURL(id: number, name: string) {
 
 export async function processFormData(formData: FormData) {
   const data: { type: string; content: string }[] = [];
-  const text = z.string().parse(formData.get("text"));
+  const text = z.string().trim().parse(formData.get("text"));
   const image = z.instanceof(File).parse(formData.get("image"));
 
   if (text.length) data.push({ type: "text", content: text });
