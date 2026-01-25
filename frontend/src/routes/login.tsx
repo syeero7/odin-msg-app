@@ -68,9 +68,7 @@ function RouteComponent() {
         <h1 className="text-5xl text-shadow-emerald-600 text-shadow-lg text-center font-extrabold">
           Deliverer
         </h1>
-        <p className="italic text-center mt-3 text-sm">
-          Send to one or send to all
-        </p>
+        <p className="italic text-center mt-3 text-sm">Send one, send all</p>
 
         <div className="grid gap-3 mt-6">
           <Button text="Continue with Github" onClick={handleClick("github")}>
